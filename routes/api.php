@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/img-most-used-color', 'App\Http\Controllers\ImageColorController@mostUsedColor');
+Route::post('/img-most-used-color', 'App\Http\Controllers\ImageColorController@mostUsedColor');
