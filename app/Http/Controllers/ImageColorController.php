@@ -14,15 +14,6 @@ class ImageColorController extends Controller
 {
 
     public function mostUsedColor(Request $request) {
-        $comparisonColorsHex = ["Aqua" => "#00FFFF", "Black" => "#000000", "Blue" => "#0000FF", "Fuchsia" => "FF00FF",
-        "Navy" => "#000080", "Olive" => "#808000", "Purple" => "#800080", "Red" => "#FF0000", "Gray" => "#808080", "Green" => "#008000",
-        "Lime" => "#00ff00", "Maroon" => "#800000", "Silver" => "#C0C0C0", "Teal" => "#008080", "White" => "FFFFFF", "Yellow" => "FFFF00"];
-
-        $similarColorResult = [
-            "colorName" => "",
-            "colorHex" => "",
-        ];
-
         $validator = Validator::make($request->all(),
         [
             'file' => 'required|mimes:jpg,png|max:2048',
@@ -32,12 +23,21 @@ class ImageColorController extends Controller
             return response()->json(['error'=>$validator->errors()], 400);
         }
 
+        $comparisonColorsHex = ["Aqua" => "#00FFFF", "Black" => "#000000", "Blue" => "#0000FF", "Fuchsia" => "FF00FF",
+        "Navy" => "#000080", "Olive" => "#808000", "Purple" => "#800080", "Red" => "#FF0000", "Gray" => "#808080", "Green" => "#008000",
+        "Lime" => "#00ff00", "Maroon" => "#800000", "Silver" => "#C0C0C0", "Teal" => "#008080", "White" => "#FFFFFF", "Yellow" => "#FFFF00"];
+
+        $similarColorResult = [
+            "colorName" => "",
+            "colorHex" => "",
+        ];
+
         $palette = Palette::fromFilename($request->file('file'));
 
         $extractor = new ColorExtractor($palette);
-        $colors = $extractor->extract(1);
+        $mostCommonColor = $extractor->extract(1);
 
-        $mostCommonColorRGB = Color::fromIntToRgb($colors[0]);
+        $mostCommonColorRGB = Color::fromIntToRgb($mostCommonColor[0]);
 
         foreach ($comparisonColorsHex as $colorName => $comparisonColorHex) {
             $colorRgb = Color::fromIntToRgb(Color::fromHexToInt($comparisonColorHex));
